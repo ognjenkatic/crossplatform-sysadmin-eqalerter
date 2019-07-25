@@ -1,0 +1,156 @@
+{
+	"data_dict" : {
+		"hostname"	:	"_source/agent/hostname",
+		"process"	:	"_source/process/name",
+		"source_ip"	:	"_source/source/ip",
+		"method"	:	"_source/system/auth/ssh/method",
+		"event"		:	"_source/system/auth/ssh/event",
+		"user"		:	"_source/user/name",
+		"timestamp"	:	"_source/@timestamp"
+	},
+	"index_name" : "my_index_name",
+	"content" : "My email body content.",
+	"subject" : "My email subject",
+	"recipients" : ["example_recipient@example.org"],
+	"alert_level" : "HIGH",
+	"query" :{
+	  "version": true,
+	  "size": 500,
+	  "sort": [
+		{
+		  "@timestamp": {
+			"order": "desc",
+			"unmapped_type": "boolean"
+		  }
+		}
+	  ],
+	  "_source": {
+		"excludes": []
+	  },
+	  "aggs": {
+		"2": {
+		  "date_histogram": {
+			"field": "@timestamp",
+			"interval": "10m",
+			"time_zone": "Europe/Budapest",
+			"min_doc_count": 1
+		  }
+		}
+	  },
+	  "stored_fields": [
+		"*"
+	  ],
+	  "script_fields": {},
+	  "docvalue_fields": [
+		{
+		  "field": "@timestamp",
+		  "format": "date_time"
+		},
+		{
+		  "field": "event.created",
+		  "format": "date_time"
+		},
+		{
+		  "field": "event.end",
+		  "format": "date_time"
+		},
+		{
+		  "field": "event.start",
+		  "format": "date_time"
+		},
+		{
+		  "field": "file.ctime",
+		  "format": "date_time"
+		},
+		{
+		  "field": "file.mtime",
+		  "format": "date_time"
+		},
+		{
+		  "field": "process.start",
+		  "format": "date_time"
+		},
+		{
+		  "field": "suricata.eve.flow.end",
+		  "format": "date_time"
+		},
+		{
+		  "field": "suricata.eve.flow.start",
+		  "format": "date_time"
+		},
+		{
+		  "field": "suricata.eve.timestamp",
+		  "format": "date_time"
+		},
+		{
+		  "field": "suricata.eve.tls.notafter",
+		  "format": "date_time"
+		},
+		{
+		  "field": "suricata.eve.tls.notbefore",
+		  "format": "date_time"
+		}
+	  ],
+	  "query": {
+		"bool": {
+		  "must": [
+			{
+			  "range": {
+				"@timestamp": {
+				  "format": "strict_date_optional_time",
+				  "gte": "now-2d/d",
+				  "lte": "now/d"
+				}
+			  }
+			}
+		  ],
+		  "filter": [
+			{
+			  "bool": {
+				"filter": [
+				  {
+					"bool": {
+					  "should": [
+						{
+						  "match_phrase": {
+							"event.dataset": "system.auth"
+						  }
+						}
+					  ],
+					  "minimum_should_match": 1
+					}
+				  },
+				  {
+					"bool": {
+					  "should": [
+						{
+						  "exists": {
+							"field": "system.auth.ssh.event"
+						  }
+						}
+					  ],
+					  "minimum_should_match": 1
+					}
+				  }
+				]
+			  }
+			}
+		  ],
+		  "should": [],
+		  "must_not": []
+		}
+	  },
+	  "highlight": {
+		"pre_tags": [
+		  "@kibana-highlighted-field@"
+		],
+		"post_tags": [
+		  "@/kibana-highlighted-field@"
+		],
+		"fields": {
+		  "*": {}
+		},
+		"fragment_size": 2147483647
+	  }
+	}
+}
