@@ -13,7 +13,6 @@ The application is split up into the following modules based on functionality:
 * eqparse - handles the parsing of elasticsearch results according to configuration specifications.
 * eqsend - handles sending the emails to recipients.
 * eqwrite - handles writing data to disk.
-** Support for more than one index.
 
 ## Configuration
 
