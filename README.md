@@ -85,6 +85,8 @@ and with a query that checks for ssh events for a specific host whos logs are be
 Example of usage:
 
 <pre>
+usage: eqalerter.py [-h] [-v] config
+
 python3 eqalerter.py ssh_config1 -v
 python3 eqalerter.py apache_errors
 ....
